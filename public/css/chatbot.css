@@ -1,0 +1,271 @@
+/* Chatbot CSS Variables Override */
+:root {
+    --chatbot-pink: #FF6B9D;
+    --chatbot-purple: #8A2BE2;
+}
+
+/* Chatbot General Container */
+#loco-chatbot-container {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    z-index: 99999 !important;
+    font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Floating Action Button */
+#loco-chatbot-fab {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--primary-pink, #FF69B4), var(--secondary-color, #8A2BE2));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+}
+
+#loco-chatbot-fab:hover {
+    transform: scale(1.1) rotate(10deg);
+    box-shadow: 0 6px 20px rgba(255, 105, 180, 0.6);
+}
+
+#loco-chatbot-fab i {
+    transition: transform 0.3s ease;
+}
+
+/* Chat Window */
+#loco-chatbot-window {
+    position: absolute;
+    bottom: 80px;
+    right: 0;
+    width: 350px;
+    height: 500px;
+    max-height: 80vh;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    transform-origin: bottom right;
+    transform: scale(0);
+    opacity: 0;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+    pointer-events: none;
+}
+
+#loco-chatbot-window.active {
+    transform: scale(1);
+    opacity: 1;
+    pointer-events: all;
+}
+
+/* Chat Header */
+#loco-chatbot-header {
+    background: linear-gradient(135deg, rgba(255, 105, 180, 0.8), rgba(138, 43, 226, 0.8));
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.chatbot-header-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.chatbot-header-avatar {
+    width: 35px;
+    height: 35px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-pink, #FF69B4);
+    font-size: 18px;
+}
+
+.chatbot-header-title h4 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.chatbot-header-title p {
+    margin: 0;
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.chatbot-close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.chatbot-close-btn:hover {
+    opacity: 1;
+}
+
+/* Chat Body (Messages) */
+#loco-chatbot-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    background: var(--bg-color, #1a1a1a); /* Adjust according to site theme */
+}
+
+.chat-message {
+    max-width: 80%;
+    padding: 12px 16px;
+    border-radius: 18px;
+    font-size: 14px;
+    line-height: 1.4;
+    animation: fadeIn 0.3s ease forwards;
+    word-wrap: break-word;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.chat-message.bot {
+    align-self: flex-start;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border-bottom-left-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.chat-message.user {
+    align-self: flex-end;
+    background: var(--primary-pink, #FF69B4);
+    color: white;
+    border-bottom-right-radius: 4px;
+}
+
+.chat-product-card {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    padding: 10px;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.chat-product-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.chat-product-info h5 {
+    margin: 0 0 4px 0;
+    font-size: 14px;
+    color: white;
+}
+
+.chat-product-info p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--primary-pink, #FF69B4);
+    font-weight: bold;
+}
+
+/* Chat Input Area */
+#loco-chatbot-input-area {
+    padding: 15px;
+    background: var(--bg-color, #1a1a1a);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    gap: 10px;
+}
+
+#loco-chatbot-input {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 10px 15px;
+    color: white;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+#loco-chatbot-input:focus {
+    border-color: var(--primary-pink, #FF69B4);
+}
+
+#loco-chatbot-send-btn {
+    background: var(--primary-pink, #FF69B4);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.3s;
+}
+
+#loco-chatbot-send-btn:hover {
+    transform: scale(1.05);
+    background: #ff4d94;
+}
+
+/* Scrollbar styling for chat */
+#loco-chatbot-messages::-webkit-scrollbar {
+    width: 6px;
+}
+#loco-chatbot-messages::-webkit-scrollbar-track {
+    background: transparent;
+}
+#loco-chatbot-messages::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    #loco-chatbot-window {
+        width: 100%;
+        height: 100vh;
+        max-height: 100vh;
+        bottom: 0;
+        right: 0;
+        border-radius: 0;
+        transform-origin: bottom;
+    }
+    #loco-chatbot-fab {
+        bottom: 20px;
+        right: 20px;
+        z-index: 10000;
+    }
+}

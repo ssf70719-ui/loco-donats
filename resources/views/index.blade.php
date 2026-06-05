@@ -16,6 +16,39 @@
             <img src="{{ asset('images/hero.png') }}" alt="Delicious Donuts Collection" style="max-width: 90%; height: auto; position: relative; z-index: 1; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.5));">
         </div>
     </section>
+    <!-- Dynamic Recommendations Section -->
+    @if(isset($products) && $products->count() > 0)
+    <section class="recommendations" style="background: #1a1a1a; padding: 5rem 5%; color: white;">
+        <h2 style="text-align: center; font-family: var(--font-serif); font-size: 2.5rem; margin-bottom: 1rem; color: var(--primary-pink);">Nos Recommandations</h2>
+        <p style="text-align: center; color: #bbb; margin-bottom: 3rem;">Quelques-uns de nos délices choisis au hasard pour vous aujourd'hui.</p>
+        
+        <div class="product-grid" style="display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap;">
+            @foreach($products as $product)
+                <div class="product-card" style="width: 300px; background: #2d2d2d; border: 2px solid var(--primary-pink); border-radius: 20px; padding: 1.5rem; transition: var(--transition); box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+                    <div class="product-img-container" style="position: relative; height: 180px; overflow: hidden; border-radius: 15px; margin-bottom: 1rem; background: rgba(0,0,0,0.2);">
+                        <img src="{{ Str::startsWith($product->image_url, 'http') ? $product->image_url : asset($product->image_url) }}" alt="{{ $product->name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                        @if($product->badge)
+                            <div style="position: absolute; top: 10px; right: 10px; background: var(--primary-pink); color: white; padding: 5px 12px; border-radius: 20px; font-weight: bold; font-size: 12px;">
+                                {{ $product->badge }}
+                            </div>
+                        @endif
+                    </div>
+                    <div class="product-info" style="text-align: center;">
+                        <h3 class="product-title" style="color: white; font-size: 1.3rem; margin-bottom: 5px; font-weight: 600;">{{ $product->name }}</h3>
+                        <p class="product-desc" style="color: #bbb; font-size: 0.9rem; line-height: 1.4; margin-bottom: 15px; min-height: 40px;">{{ $product->description }}</p>
+                        <div class="product-footer" style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1rem;">
+                            <span class="product-price" style="color: var(--primary-pink); font-weight: 800; font-size: 1.4rem;">{{ $product->price }} DH</span>
+                            <button class="btn-add" onclick="addToCart({{ $product->id }}, '{{ addslashes($product->name) }}', {{ $product->price }}, '{{ Str::startsWith($product->image_url, 'http') ? $product->image_url : asset($product->image_url) }}')" style="background: linear-gradient(135deg, var(--primary-pink), #8a2be2); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; transition: all 0.3s ease;"><i class="fa-solid fa-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+        <div style="text-align: center; margin-top: 3rem;">
+            <a href="/menu" class="btn-primary" style="background: transparent; border: 2px solid var(--primary-pink); color: var(--primary-pink); padding: 1rem 2rem; border-radius: 30px; font-weight: bold; transition: all 0.3s ease;">Voir tout le menu</a>
+        </div>
+    </section>
+    @endif
 
     <!-- Features -->
     <section class="features" id="features" style="background: #1a1a1a; padding: 5rem 5%; display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem;">

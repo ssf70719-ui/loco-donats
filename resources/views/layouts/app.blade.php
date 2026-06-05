@@ -3,12 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="title">Loco Donuts - Beignets Premium en ligne</title>
-    <meta name="description" content="Commandez les plus délicieux beignets en ligne.">
+    
+    <!-- SEO Meta Tags -->
+    <title data-i18n="title">{{ $pageTitle ?? 'Loco Donuts - Beignets Premium en ligne' }}</title>
+    <meta name="description" content="{{ $pageDescription ?? 'Commandez les plus délicieux beignets artisanaux en ligne. Livraison rapide en moins de 30 minutes. Fabriqué avec amour.' }}">
+    <meta name="keywords" content="donuts, beignets, livraison, Loco Donuts, gaufres, crepes, dessert, patisserie">
+    <meta name="author" content="Loco Donuts">
+    <link rel="canonical" href="{{ url()->current() }}">
+    
+    <!-- OpenGraph (Facebook/WhatsApp/LinkedIn) -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:title" content="{{ $pageTitle ?? 'Loco Donuts - Beignets Premium en ligne' }}">
+    <meta property="og:description" content="{{ $pageDescription ?? 'Commandez les plus délicieux beignets artisanaux en ligne. Livraison rapide en moins de 30 minutes.' }}">
+    <meta property="og:image" content="{{ asset('images/hero.png') }}">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ url()->current() }}">
+    <meta property="twitter:title" content="{{ $pageTitle ?? 'Loco Donuts - Beignets Premium en ligne' }}">
+    <meta property="twitter:description" content="{{ $pageDescription ?? 'Commandez les plus délicieux beignets artisanaux en ligne. Livraison rapide en moins de 30 minutes.' }}">
+    <meta property="twitter:image" content="{{ asset('images/hero.png') }}">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('css/donuts.css') }}">
+    <!-- Chatbot CSS -->
+    <link rel="stylesheet" href="{{ asset('css/chatbot.css') }}">
+    <script src="https://js.stripe.com/v3/"></script>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
         /* Language Switcher */
         .lang-switcher {
@@ -95,8 +118,11 @@
             <a href="/contact" data-i18n="nav_contact">Contact</a>
         </nav>
         
-        <div style="display: flex; align-items: center;">
-            <div class="lang-switcher">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <a href="{{ route('admin.products.index') }}" style="color: white; font-size: 1.2rem; transition: color 0.3s;" title="Tableau de Bord">
+                <i class="fa-solid fa-gear"></i>
+            </a>
+            <div class="lang-switcher" style="margin-right: 0;">
                 <select id="lang-select" onchange="changeLanguage(this.value)">
                     <option value="fr">FR</option>
                     <option value="en">EN</option>
@@ -104,7 +130,7 @@
                     <option value="es">ES</option>
                 </select>
             </div>
-            <div class="cart-icon-container" onclick="toggleCart()">
+            <div class="cart-icon-container" onclick="toggleCart()" style="margin-left: 0;">
                 <i class="fa-solid fa-shopping-bag"></i>
                 <span class="cart-count" id="cart-count">0</span>
             </div>
@@ -416,28 +442,55 @@
                 return;
             }
             
-            let message = i18n[currentLang].wa_msg_start;
-            let total = 0;
-            
-            cart.forEach(item => {
-                const itemTotal = item.price * item.qty;
-                total += itemTotal;
-                const translatedTitle = i18n[currentLang][item.titleKey] || item.titleKey;
-                message += `- ${item.qty}x ${translatedTitle} (${itemTotal} DH)%0A`;
+            // Show loading state
+            const btn = document.querySelector('.btn-checkout');
+            const originalText = btn.innerText;
+            btn.innerText = 'Chargement...';
+            btn.disabled = true;
+
+            const stripe = Stripe('{{ env('STRIPE_KEY') }}');
+
+            fetch('{{ route('checkout') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    cart: cart.map(item => ({
+                        name: i18n[currentLang][item.titleKey] || item.titleKey,
+                        price: item.price,
+                        qty: item.qty
+                    }))
+                })
+            })
+            .then(response => response.json())
+            .then(session => {
+                if (session.is_demo) {
+                    // Simulation mode: skip Stripe and go to success
+                    cart = [];
+                    saveCart();
+                    window.location.href = '{{ route('checkout.success') }}?mode=demo';
+                } else if (session.id) {
+                    cart = [];
+                    saveCart();
+                    return stripe.redirectToCheckout({ sessionId: session.id });
+                } else if (session.error) {
+                    throw new Error(session.error);
+                } else {
+                    throw new Error('Session ID missing');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Erreur: ' + error.message);
+                btn.innerText = originalText;
+                btn.disabled = false;
             });
-            
-            message += `%0A💰 *${i18n[currentLang].wa_msg_total}: ${total.toFixed(2)} DH*%0A%0A`;
-            message += i18n[currentLang].wa_msg_thanks;
-            
-            const whatsappNumber = "212635266609";
-            const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${message}`;
-            
-            window.open(whatsappUrl, '_blank');
-            
-            cart = [];
-            saveCart();
-            toggleCart();
         }
     </script>
+    
+    <!-- Chatbot JS -->
+    <script src="{{ asset('js/chatbot.js') }}" defer></script>
 </body>
 </html>

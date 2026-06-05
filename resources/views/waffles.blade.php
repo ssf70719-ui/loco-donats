@@ -32,6 +32,8 @@
          .product-card { transition: all 0.3s ease; }
          .product-card:hover { transform: translateY(-10px); }
       </style>
+    <link rel="stylesheet" href="{{ asset('css/chatbot.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
    </head>
    <body style="background: #1a1a1a; color: white;">
       <!-- header section start -->
@@ -232,5 +234,6 @@
            document.getElementById("mySidenav").style.width = "0";
          }
       </script>
+    <script src="{{ asset('js/chatbot.js') }}" defer></script>
    </body>
 </html>

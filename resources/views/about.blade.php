@@ -252,6 +252,7 @@
         document.body.style.overflow = 'auto';
     }
 
+
     // Close on click outside
     window.onclick = function(event) {
         const modal = document.getElementById('recipeModal');
@@ -260,5 +261,6 @@
         }
     }
 </script>
+
 
 @endsection
