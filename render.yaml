@@ -12,5 +12,27 @@ services:
         value: false
       - key: APP_ENV
         value: production
+      - key: APP_NAME
+        value: "Loco Donuts"
       - key: LOG_CHANNEL
         value: stderr
+      - key: DB_CONNECTION
+        value: sqlite
+      - key: DB_DATABASE
+        value: /var/data/database.sqlite
+      - key: SESSION_DRIVER
+        value: file
+      - key: CACHE_STORE
+        value: file
+      - key: QUEUE_CONNECTION
+        value: sync
+      - key: FILESYSTEM_DISK
+        value: local
+      - key: STRIPE_KEY
+        sync: false
+      - key: STRIPE_SECRET
+        sync: false
+    disk:
+      name: sqlite-data
+      mountPath: /var/data
+      sizeGB: 1
